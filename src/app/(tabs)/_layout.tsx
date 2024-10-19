@@ -15,6 +15,7 @@ import {
   faCommentDots,
   faHeart,
   faUser,
+  faAreaChart,
 } from "@fortawesome/free-solid-svg-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 const FontAwesomeIcon =
@@ -71,7 +72,9 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => (
+
             <TabBarIcon name="battery" color={color} />
+
           ),
         }}
       />
