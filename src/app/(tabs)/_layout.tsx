@@ -72,9 +72,7 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => (
-
             <TabBarIcon name="battery" color={color} />
-
           ),
         }}
       />
