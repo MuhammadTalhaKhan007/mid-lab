@@ -72,11 +72,9 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => (
-            <FontAwesomeIcon
-              icon={faAreaChart}
-              size={Platform.OS === "web" ? ("25px" as any) : 25}
-              color={color}
-            />
+
+            <TabBarIcon name="battery" color={color} />
+
           ),
         }}
       />
