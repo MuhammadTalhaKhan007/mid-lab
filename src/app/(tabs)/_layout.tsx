@@ -52,7 +52,7 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/productsPage" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
