@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { GetProductsAPIResponse } from "../../Data/types";
-import { BASE_URL } from "react-native-dotenv";
+import { BASE_URL } from "@env";
 
 const GetProductsAPI = (pageNumber: number) => {
   const [data, setData] = useState<GetProductsAPIResponse | null>(null);
