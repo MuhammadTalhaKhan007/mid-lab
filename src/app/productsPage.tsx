@@ -1,9 +1,16 @@
 import { View, Text, Image, StyleSheet, FlatList } from "react-native";
 import GetProductsAPI from "../components/APIs/getProductsAPI";
 import { Product } from "../Data/types";
+import { useState } from "react";
 
 const ProductsPage = () => {
   const products = GetProductsAPI(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const renderProduct = ({ item }: { item: Product }) => (
     <View style={styles.productCard}>
       <Image source={{ uri: item.image }} style={styles.productImage} />
