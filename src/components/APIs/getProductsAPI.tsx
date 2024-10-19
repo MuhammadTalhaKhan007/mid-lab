@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { GetProductsAPIResponse } from "../../Data/types";
+import { BASE_URL } from "react-native-dotenv";
 
 const GetProductsAPI = (pageNumber: number) => {
   const [data, setData] = useState<GetProductsAPIResponse | null>(null);
@@ -10,9 +11,7 @@ const GetProductsAPI = (pageNumber: number) => {
 
   const getProducts = async () => {
     try {
-      const response = await fetch(
-        `https://foodapi-zohaib.vercel.app/products?page=${pageNumber};`
-      );
+      const response = await fetch(`${BASE_URL}/products?page=${pageNumber};`);
       const json = await response.json();
       setData(json);
     } catch (error) {
