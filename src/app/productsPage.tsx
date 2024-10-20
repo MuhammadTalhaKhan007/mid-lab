@@ -10,57 +10,42 @@ import {
 import { Text, View } from "react-native";
 import { Product, GetProductsAPIResponse } from "../Data/types";
 import { BASE_URL } from "@env";
-import { fetchProductsFromAPI } from "../components/APIs/getProductsAPI";
+import { useFetchProducts } from "../components/APIs/getProductsAPI";
 
 export default function TabTwoScreen() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [load, setLoad] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const fetchProducts = useCallback(async (page = 1, refresh = false) => {
-    try {
-      if (refresh) {
-        setIsRefreshing(true);
-      } else {
-        setIsLoading(true);
-      }
-
-      const responseData = await fetchProductsFromAPI(page);
-
-      if (page === 1 || refresh) {
-        setProducts(responseData.docs);
-      } else {
-        setProducts((prevProducts) => [...prevProducts, ...responseData.docs]);
-      }
-
-      setCurrentPage(responseData.page);
-      setTotalPages(responseData.totalPages);
-    } catch (err) {
-      setError("An error occurred while fetching products");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, []);
+  const { data, isLoading, error } = useFetchProducts(currentPage, load);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    if (data) {
+      if (currentPage === 1) {
+        setProducts(data.docs);
+      } else {
+        setProducts((prevProducts) => [...prevProducts, ...data.docs]);
+      }
+      setTotalPages(data.totalPages);
+    }
+  }, [data]);
 
-  const loadMoreProducts = () => {
+  const handleLoadMore = () => {
     if (currentPage < totalPages && !isLoading) {
-      fetchProducts(currentPage + 1);
+      setLoad(true);
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
-  const handleRefresh = useCallback(() => {
-    fetchProducts(1, true);
-  }, [fetchProducts]);
-
+  const handleRefresh = () => {
+    if (!isRefreshing) {
+      setIsRefreshing(true);
+      setCurrentPage(1);
+      setIsRefreshing(false);
+    }
+  };
   const renderProduct = ({ item }: { item: Product }) => (
     <View style={styles.productCard}>
       <Image source={{ uri: item.image }} style={styles.productImage} />
@@ -84,21 +69,13 @@ export default function TabTwoScreen() {
   );
 
   const renderFooter = () => {
-    if (!isLoading) return null;
+    if (!load) return null;
     return (
       <View style={styles.footerLoader}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   };
-
-  if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
@@ -108,7 +85,7 @@ export default function TabTwoScreen() {
         renderItem={renderProduct}
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContainer}
-        onEndReached={loadMoreProducts}
+        onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         refreshControl={
