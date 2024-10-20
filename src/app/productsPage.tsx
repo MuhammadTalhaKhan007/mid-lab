@@ -10,6 +10,7 @@ import {
 import { Text, View } from "react-native";
 import { Product, GetProductsAPIResponse } from "../Data/types";
 import { BASE_URL } from "@env";
+import { fetchProductsFromAPI } from "../components/APIs/getProductsAPI";
 
 export default function TabTwoScreen() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,18 +27,17 @@ export default function TabTwoScreen() {
       } else {
         setIsLoading(true);
       }
-      const response = await fetch(`${BASE_URL}/products?page=${page}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-      const data: GetProductsAPIResponse = await response.json();
+
+      const responseData = await fetchProductsFromAPI(page);
+
       if (page === 1 || refresh) {
-        setProducts(data.docs);
+        setProducts(responseData.docs);
       } else {
-        setProducts((prevProducts) => [...prevProducts, ...data.docs]);
+        setProducts((prevProducts) => [...prevProducts, ...responseData.docs]);
       }
-      setCurrentPage(data.page);
-      setTotalPages(data.totalPages);
+
+      setCurrentPage(responseData.page);
+      setTotalPages(responseData.totalPages);
     } catch (err) {
       setError("An error occurred while fetching products");
       console.error(err);
