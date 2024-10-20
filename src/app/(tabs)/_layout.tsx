@@ -16,6 +16,7 @@ import {
   faHeart,
   faUser,
   faAreaChart,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 const FontAwesomeIcon =
@@ -34,9 +35,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
+        tabBarActiveTintColor: "brown",
+        tabBarInactiveTintColor: "gray",
         headerShown: useClientOnlyValue(false, true),
       }}
     >
@@ -73,6 +73,19 @@ export default function TabLayout() {
           title: "Tab Two",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="battery" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inputProduct"
+        options={{
+          title: "New Product",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon
+              icon={faPlus}
+              size={Platform.OS === "web" ? ("25px" as any) : 25}
+              color={color}
+            />
           ),
         }}
       />
