@@ -33,7 +33,6 @@ export const usePostProducts = () => {
       }
 
       const data = await response.json();
-      console.log("Product created successfully:", data);
     } catch (err) {
       setError("An error occurred while posting product");
       console.error(err);
