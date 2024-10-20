@@ -1,15 +1,65 @@
-import { View, Text, Image, StyleSheet, FlatList } from "react-native";
-import GetProductsAPI from "../components/APIs/getProductsAPI";
-import { Product } from "../Data/types";
-import { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  StyleSheet,
+  FlatList,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
+import { Text, View } from "react-native";
+import { Product, GetProductsAPIResponse } from "../Data/types";
+import { BASE_URL } from "@env";
 
-const ProductsPage = () => {
-  const products = GetProductsAPI(1);
+export default function TabTwoScreen() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const fetchProducts = useCallback(async (page = 1, refresh = false) => {
+    try {
+      if (refresh) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+      const response = await fetch(`${BASE_URL}/products?page=${page}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      const data: GetProductsAPIResponse = await response.json();
+      if (page === 1 || refresh) {
+        setProducts(data.docs);
+      } else {
+        setProducts((prevProducts) => [...prevProducts, ...data.docs]);
+      }
+      setCurrentPage(data.page);
+      setTotalPages(data.totalPages);
+    } catch (err) {
+      setError("An error occurred while fetching products");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const loadMoreProducts = () => {
+    if (currentPage < totalPages && !isLoading) {
+      fetchProducts(currentPage + 1);
+    }
+  };
+
+  const handleRefresh = useCallback(() => {
+    fetchProducts(1, true);
+  }, [fetchProducts]);
 
   const renderProduct = ({ item }: { item: Product }) => (
     <View style={styles.productCard}>
@@ -33,6 +83,23 @@ const ProductsPage = () => {
     </View>
   );
 
+  const renderFooter = () => {
+    if (!isLoading) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  };
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
@@ -41,10 +108,22 @@ const ProductsPage = () => {
         renderItem={renderProduct}
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContainer}
+        onEndReached={loadMoreProducts}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={renderFooter}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            colors={["#0000ff"]}
+            tintColor="#0000ff"
+          />
+        }
       />
     </View>
   );
-};
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -126,5 +205,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-export default ProductsPage;

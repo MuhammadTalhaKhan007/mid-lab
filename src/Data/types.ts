@@ -9,4 +9,7 @@ export interface Product {
 
 export interface GetProductsAPIResponse {
     docs: Product[];
+    totalPages: number;
+    page: number;
+
 }
