@@ -77,6 +77,13 @@ export default function ProductsPage() {
       </View>
     );
   };
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
