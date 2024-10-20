@@ -12,7 +12,7 @@ import { Product, GetProductsAPIResponse } from "../Data/types";
 import { BASE_URL } from "@env";
 import { useFetchProducts } from "../components/APIs/getProductsAPI";
 
-export default function TabTwoScreen() {
+export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [load, setLoad] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
