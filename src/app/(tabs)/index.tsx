@@ -66,9 +66,7 @@ export default function TabOneScreen() {
           }}
           style={styles.image}
         />
-        <Text numberOfLines={1} style={styles.name}>
-          {item.name}
-        </Text>
+        <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.category}>{item.category}</Text>
         <Text style={styles.availability}>
           {item.inStock ? "In Stock" : "Out of Stock"}
