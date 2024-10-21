@@ -77,14 +77,6 @@ export default function TabOneScreen() {
     );
   };
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (error) {
-    return <Text>Error loading data</Text>;
-  }
-
   return (
     <>
       <ScrollView horizontal style={styles.categoryContainer}>
@@ -173,7 +165,7 @@ const styles = StyleSheet.create({
     height: 400,
   },
   rightCard: {
-    height: 240,
+    height: 250,
     paddingTop: 10,
   },
   image: {
