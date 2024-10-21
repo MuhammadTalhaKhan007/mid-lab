@@ -13,3 +13,17 @@ export interface GetProductsAPIResponse {
     page: number;
 
 }
+
+export interface Food {
+    id: number;
+    category: string;
+    name: string,
+    inStock: boolean
+}
+
+export type FoodItem = {
+    id: number;
+    category: string;
+    name: string;
+    inStock: boolean;
+};

@@ -1,7 +1,7 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Pressable, Platform } from "react-native";
+import { Pressable, Platform, View } from "react-native";
 import { FontAwesomeIcon as RNFontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { FontAwesomeIcon as WebFontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Colors from "@/constants/Colors";
@@ -43,7 +43,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
+          title: "",
           tabBarIcon: ({ color }) => (
             <FontAwesomeIcon
               icon={faCommentDots}
@@ -52,18 +52,40 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/productsPage" asChild>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Link href="/productsPage" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <FontAwesome
+                      name="heart"
+                      size={25}
+                      color={"red"}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="info-circle"
+                    name="shopping-bag"
                     size={25}
                     color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    style={{ opacity: pressed ? 0.5 : 1, marginRight: 10 }}
                   />
                 )}
               </Pressable>
-            </Link>
+            </View>
+          ),
+          headerLeft: () => (
+            <Pressable style={{ marginLeft: 15 }}>
+              <FontAwesome
+                name="bars"
+                size={25}
+                color={Colors[colorScheme ?? "light"].text}
+              />
+            </Pressable>
           ),
         }}
       />
